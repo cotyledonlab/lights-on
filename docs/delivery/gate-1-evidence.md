@@ -15,13 +15,13 @@ command was run.
 
 ## Evidence
 
-| Gate 1 criterion        | Result | Evidence                                                                                                                                                                                                                                                                                   |
-| ----------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Local setup works       | Pass   | `make bootstrap` completed; `make doctor` confirmed Node.js 24.18.0, pnpm, Git, Docker, OpenSSL, a healthy Docker daemon, mode `600` for `.env`, and no tracked environment files.                                                                                                         |
-| CI works                | Pass   | GitHub Actions run [30208853098](https://github.com/cotyledonlab/lights-on/actions/runs/30208853098) passed on implementation commit `3b976f3207b33226d7885acaac2ae458aedb9559`. Draft PR: [#1](https://github.com/cotyledonlab/lights-on/pull/1).                                         |
-| Tests work              | Pass   | Nine unit tests, three isolated PostgreSQL integration tests, and one Playwright browser journey passed. The browser journey covers consent, submission, queued extraction, separate reviewer authentication, human correction, result viewing, payment interest, analytics, and deletion. |
-| Documentation is usable | Pass   | Implementation plan, ADRs, architecture overview, threat model, roadmap, issue catalogue, local-development guide, operations notes, incident response, credential rotation, gate register, and evidence model are present under `docs/`.                                                  |
-| No committed secrets    | Pass   | Gitleaks scanned the implementation history and found no leaks. CI repeated the secret scan successfully. `.env` is ignored, mode `600`, and rejected by `make doctor` if tracked.                                                                                                         |
+| Gate 1 criterion        | Result | Evidence                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local setup works       | Pass   | `make bootstrap` completed; `make doctor` confirmed Node.js 24.18.0, pnpm, Git, Docker, OpenSSL, a healthy Docker daemon, mode `600` for `.env`, and no tracked environment files.                                                                                                                                                  |
+| CI works                | Pass   | GitHub Actions run [30224582660](https://github.com/cotyledonlab/lights-on/actions/runs/30224582660) passed on reviewed implementation commit `20984c0ac640ce9d8d73e77af39e8b7837dcf132`. PR: [#1](https://github.com/cotyledonlab/lights-on/pull/1). This evidence-only report update does not alter the validated implementation. |
+| Tests work              | Pass   | Eleven unit tests, six isolated PostgreSQL integration tests, and one Playwright browser journey passed. The suites cover concurrent deletion, fenced stale leases, in-flight cancellation, terminal failure state, spoofed rate-limit headers, and the full receipt journey.                                                       |
+| Documentation is usable | Pass   | Implementation plan, ADRs, architecture overview, threat model, roadmap, issue catalogue, local-development guide, operations notes, incident response, credential rotation, gate register, and evidence model are present under `docs/`.                                                                                           |
+| No committed secrets    | Pass   | Gitleaks scanned the implementation history and found no leaks. CI repeated the secret scan successfully. `.env` is ignored, mode `600`, and rejected by `make doctor` if tracked.                                                                                                                                                  |
 
 ## Validation record
 
@@ -30,7 +30,7 @@ command was run.
 | `pnpm format:check`                      | Pass                                                |
 | `make lint`                              | Pass across all workspaces and browser tests        |
 | `make typecheck`                         | Pass across the root and all workspaces             |
-| `make test`                              | Pass: 9 unit and 3 integration tests                |
+| `make test`                              | Pass: 11 unit and 6 integration tests               |
 | `make test-e2e`                          | Pass: 1 full Chromium journey                       |
 | `make build`                             | Pass: web production build and bundled worker       |
 | Web and worker Docker builds             | Pass                                                |
