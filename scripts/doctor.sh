@@ -47,7 +47,7 @@ else
   failed=1
 fi
 
-if git ls-files | grep -Eq '(^|/)\.env($|\.)'; then
+if git ls-files | grep -E '(^|/)\.env($|\.)' | grep -Ev '(^|/)\.env\.example$' >/dev/null; then
   echo "unsafe tracked environment file"
   failed=1
 else
@@ -55,4 +55,3 @@ else
 fi
 
 exit "${failed}"
-

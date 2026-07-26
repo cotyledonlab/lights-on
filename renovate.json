@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "labels": ["area:delivery", "type:task"],
+  "minimumReleaseAge": "7 days",
+  "packageRules": [
+    {
+      "description": "Group low-risk lint and test tooling",
+      "groupName": "low-risk development tooling",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "description": "Keep database and framework upgrades isolated",
+      "matchPackageNames": ["next", "prisma", "@prisma/client"],
+      "rangeStrategy": "pin",
+      "separateMajorMinor": true
+    }
+  ],
+  "prConcurrentLimit": 5,
+  "rangeStrategy": "pin",
+  "schedule": ["before 8am on monday"]
+}

@@ -13,7 +13,7 @@ endif
 bootstrap:
 	mise install
 	./scripts/bootstrap-local.sh
-	$(MISE) pnpm install --frozen-lockfile=false
+	$(MISE) pnpm install --frozen-lockfile
 	$(MISE) pnpm db:generate
 
 doctor:
@@ -70,4 +70,3 @@ deploy-production:
 
 backup-check:
 	./scripts/phase-not-available.sh backup-check "$(ENV)"
-

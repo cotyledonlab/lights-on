@@ -8,7 +8,7 @@ export function participantCookieOptions(): Partial<ResponseCookie> {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60,
     path: "/",
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production"
   };
 }

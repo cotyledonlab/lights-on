@@ -1,0 +1,79 @@
+name: Story or task
+description: Define one independently verifiable implementation increment.
+title: ""
+labels: ["type:story"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Work type
+      options:
+        - Story
+        - Task
+        - Spike
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: "- [ ] Observable criterion\n- [ ] Observable criterion"
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+    validations:
+      required: true
+  - type: textarea
+    id: human-gate
+    attributes:
+      label: Human stop gate
+    validations:
+      required: true
+  - type: textarea
+    id: estimate
+    attributes:
+      label: Estimate
+      value:
+        "- Size: XS, S, M, or L\n- Focused engineering hours: \n- Confidence: \n- Key
+        uncertainty: "
+    validations:
+      required: true

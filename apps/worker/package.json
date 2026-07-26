@@ -3,28 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --out-dir dist",
+    "build": "tsup",
     "clean": "rm -rf dist",
     "dev": "tsx watch src/index.ts",
-    "lint": "eslint src tests",
+    "lint": "eslint src tests tsup.config.ts",
     "start": "tsx src/index.ts",
     "test": "vitest run --exclude 'tests/integration/**' --passWithNoTests",
     "test:integration": "vitest run tests/integration",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
     "@lights-on/database": "workspace:*",
     "@lights-on/extraction": "workspace:*",
     "@lights-on/observability": "workspace:*",
     "@lights-on/queue": "workspace:*",
-    "zod": "4.4.3"
-  },
-  "devDependencies": {
     "@types/node": "24.13.3",
     "tsx": "4.23.1",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.10",
+    "zod": "4.4.3"
   }
 }

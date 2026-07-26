@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DATABASE_URL: postgresql://lights_on:lights_on_ci@127.0.0.1:5432/lights_on
+  LOG_LEVEL: info
+  NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
+  PARTICIPANT_COOKIE_SECRET: ci-participant-cookie-secret-000000000000000000
+  REVIEWER_ACCESS_CODE: ci-review-code
+  REVIEWER_COOKIE_SECRET: ci-reviewer-cookie-secret-00000000000000000000
+
+jobs:
+  validate:
+    name: Validate and scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: lights_on
+          POSTGRES_PASSWORD: lights_on_ci
+          POSTGRES_USER: lights_on
+        options: >-
+          --health-cmd "pg_isready -U lights_on -d lights_on" --health-interval 2s
+          --health-timeout 3s --health-retries 20
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+
+      - name: Install pnpm
+        run: npm install --global pnpm@11.17.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate database client and migrate
+        run: |
+          pnpm db:generate
+          pnpm db:deploy
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Unit and integration tests
+        run: |
+          pnpm test
+          pnpm test:integration
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Browser journey
+        run: pnpm test:e2e
+
+      - name: Production build
+        run: pnpm build
+
+      - name: Dependency audit
+        run: pnpm audit --audit-level high
+
+      - name: Secret scan
+        run: >-
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 detect
+          --source=/repo --no-banner --redact
+
+      - name: Build web image
+        run: docker build -f docker/web.Dockerfile -t lights-on-web:ci .
+
+      - name: Build worker image
+        run: docker build -f docker/worker.Dockerfile -t lights-on-worker:ci .
+
+      - name: Scan web image
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:0.72.0 image --exit-code 1 --ignore-unfixed --severity
+          CRITICAL,HIGH lights-on-web:ci
+
+      - name: Scan worker image
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:0.72.0 image --exit-code 1 --ignore-unfixed --severity
+          CRITICAL,HIGH lights-on-worker:ci

@@ -174,7 +174,10 @@ export async function completeReviewAction(
   }
 
   const job = await database.reviewJob.findUnique({
-    select: { submissionId: true },
+    select: {
+      submission: { select: { participantId: true } },
+      submissionId: true
+    },
     where: { id: jobId }
   });
   if (!job) {
@@ -212,6 +215,7 @@ export async function completeReviewAction(
   ]);
   await analytics.capture({
     name: analyticsEvents.humanReviewCompleted,
+    participantId: job.submission.participantId,
     submissionId: job.submissionId
   });
 

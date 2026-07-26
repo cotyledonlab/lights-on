@@ -1,0 +1,77 @@
+name: Initiative
+description: Plan a measurable multi-epic outcome.
+title: "[Initiative] "
+labels: ["type:initiative", "status:needs-evidence"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What user, business, or operational result should exist?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why is this work needed now?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is included?
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What must not be added opportunistically?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: "- [ ] Observable criterion\n- [ ] Observable criterion"
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Exact commands, tests, screenshots, or evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+      description: Security, privacy, delivery, cost, and operational risks.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Linked issues or external prerequisites.
+    validations:
+      required: true
+  - type: textarea
+    id: human-gate
+    attributes:
+      label: Human stop gate
+      description: State any explicit approval required before starting or closing.
+    validations:
+      required: true
+  - type: textarea
+    id: estimate
+    attributes:
+      label: Estimate
+      value:
+        "- Size: XL (decompose before implementation)\n- Focused engineering hours: \n-
+        Confidence: \n- Key uncertainty: "
+    validations:
+      required: true

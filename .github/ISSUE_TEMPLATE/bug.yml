@@ -1,0 +1,74 @@
+name: Bug
+description: Report a reproducible defect or operational risk.
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What correct observable behavior should exist?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What happened and why does it matter now?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Reproduction steps and affected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value:
+        "- [ ] Regression test fails before and passes after the fix\n- [ ] Observable
+        behavior is restored"
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Exact commands, fixture, environment, and expected result.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+    validations:
+      required: true
+  - type: textarea
+    id: human-gate
+    attributes:
+      label: Human stop gate
+    validations:
+      required: true
+  - type: textarea
+    id: estimate
+    attributes:
+      label: Estimate
+      value:
+        "- Size: \n- Focused engineering hours: \n- Confidence: \n- Key uncertainty: "
+    validations:
+      required: true

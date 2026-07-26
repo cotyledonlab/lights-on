@@ -16,11 +16,11 @@
     "dev": "turbo run dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "turbo run lint",
+    "lint": "eslint 'e2e/**/*.ts' playwright.config.ts && turbo run lint",
     "test": "turbo run test",
     "test:e2e": "playwright test",
     "test:integration": "turbo run test:integration",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "tsc --noEmit && turbo run typecheck"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
