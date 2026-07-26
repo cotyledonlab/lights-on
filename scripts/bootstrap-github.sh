@@ -39,6 +39,17 @@ if [[ ! -f "${catalogue}" ]]; then
   exit 1
 fi
 
+if ! jq -e '
+  .issues
+  | all(
+      .verification?
+      | type == "string" and length > 0
+    )
+' "${catalogue}" >/dev/null; then
+  echo "Every roadmap issue must define a non-empty verification expectation." >&2
+  exit 1
+fi
+
 echo "Verifying GitHub authentication."
 gh auth status >/dev/null
 
@@ -48,6 +59,24 @@ repository="${name_with_owner#*/}"
 mkdir -p "${artifact_dir}"
 : >"${actions_file}"
 : >"${issue_map}"
+
+if [[ -n "${PROJECT_OWNER:-}" || -n "${PROJECT_NUMBER:-}" ]]; then
+  if [[ -z "${PROJECT_OWNER:-}" || -z "${PROJECT_NUMBER:-}" ]]; then
+    echo "PROJECT_OWNER and PROJECT_NUMBER must be supplied together." >&2
+    exit 1
+  fi
+fi
+
+project_issue_urls=""
+if [[ "${mode}" == "apply" && -n "${PROJECT_OWNER:-}" ]]; then
+  project_issue_urls="$(
+    gh project item-list "${PROJECT_NUMBER}" \
+      --owner "${PROJECT_OWNER}" \
+      --limit 1000 \
+      --format json |
+      jq -r '.items[]?.content.url // empty'
+  )"
+fi
 
 record() {
   local action="$1"
@@ -156,10 +185,11 @@ write_issue_body() {
   local item="$1"
   local destination="$2"
   local parent_number="${3:-}"
-  local title kind outcome gate size hours confidence
+  local title kind outcome verification gate size hours confidence
   title="$(jq -r .title <<<"${item}")"
   kind="$(jq -r .kind <<<"${item}")"
   outcome="$(jq -r .outcome <<<"${item}")"
+  verification="$(jq -r .verification <<<"${item}")"
   gate="$(jq -r .gate <<<"${item}")"
   size="$(jq -r .size <<<"${item}" | tr '[:lower:]' '[:upper:]')"
   hours="$(jq -r .hours <<<"${item}")"
@@ -194,7 +224,7 @@ write_issue_body() {
     echo
     echo "## Verification"
     echo
-    echo "Record the exact commands, test cases, screenshots, plans, interviews, or operational evidence appropriate to this issue before moving it to Validation."
+    echo "${verification}"
     echo
     echo "## Risks"
     echo
@@ -230,6 +260,36 @@ lookup_number() {
   awk -F $'\t' -v key="${key}" '$1 == key { print $2; exit }' "${issue_map}"
 }
 
+reconcile_project_item() {
+  local issue_url="$1"
+  local title="$2"
+  if [[ -z "${PROJECT_OWNER:-}" ]]; then
+    return
+  fi
+
+  if [[ "${mode}" == "dry-run" ]]; then
+    announce "add or reconcile issue in project ${PROJECT_OWNER}/${PROJECT_NUMBER}" "${title}"
+    record "project-item" "${title}" "planned" "${PROJECT_OWNER}/${PROJECT_NUMBER}"
+    return
+  fi
+
+  if grep -Fqx "${issue_url}" <<<"${project_issue_urls}"; then
+    echo "[skip] project item exists: ${title}"
+    record "project-item" "${title}" "skipped" "${PROJECT_OWNER}/${PROJECT_NUMBER}"
+    return
+  fi
+
+  announce "add issue to project ${PROJECT_OWNER}/${PROJECT_NUMBER}" "${title}"
+  gh project item-add "${PROJECT_NUMBER}" \
+    --owner "${PROJECT_OWNER}" \
+    --url "${issue_url}" >/dev/null
+  if [[ -n "${project_issue_urls}" ]]; then
+    project_issue_urls+=$'\n'
+  fi
+  project_issue_urls+="${issue_url}"
+  record "project-item" "${title}" "created" "${PROJECT_OWNER}/${PROJECT_NUMBER}"
+}
+
 while IFS= read -r item; do
   key="$(jq -r .key <<<"${item}")"
   kind="$(jq -r .kind <<<"${item}")"
@@ -253,45 +313,39 @@ while IFS= read -r item; do
     echo "[skip] issue exists: #${existing_number} ${title}"
     printf '%s\t%s\n' "${key}" "${existing_number}" >>"${issue_map}"
     record "issue" "${title}" "skipped" "issue #${existing_number}"
-    continue
-  fi
-
-  announce "create issue" "${title}"
-  if [[ "${mode}" == "dry-run" ]]; then
+    issue_url="https://github.com/${name_with_owner}/issues/${existing_number}"
+  elif [[ "${mode}" == "dry-run" ]]; then
+    announce "create issue" "${title}"
     record "issue" "${title}" "planned" "catalogue key ${key}"
+    reconcile_project_item "" "${title}"
     continue
-  fi
-
-  body_file="${work_dir}/${key}.md"
-  write_issue_body "${item}" "${body_file}" "${parent_number}"
-  area="$(jq -r .area <<<"${item}")"
-  priority="$(jq -r .priority <<<"${item}")"
-  size="$(jq -r .size <<<"${item}")"
-  milestone="$(jq -r .milestone <<<"${item}")"
-  if [[ "${kind}" == "gate" ]]; then
-    labels="type:task,gate:human-review,status:needs-evidence,area:${area},priority:${priority},size:${size}"
   else
-    labels="type:${kind},status:needs-evidence,area:${area},priority:${priority},size:${size}"
+    announce "create issue" "${title}"
+    body_file="${work_dir}/${key}.md"
+    write_issue_body "${item}" "${body_file}" "${parent_number}"
+    area="$(jq -r .area <<<"${item}")"
+    priority="$(jq -r .priority <<<"${item}")"
+    size="$(jq -r .size <<<"${item}")"
+    milestone="$(jq -r .milestone <<<"${item}")"
+    if [[ "${kind}" == "gate" ]]; then
+      labels="type:task,gate:human-review,status:needs-evidence,area:${area},priority:${priority},size:${size}"
+    else
+      labels="type:${kind},status:needs-evidence,area:${area},priority:${priority},size:${size}"
+    fi
+
+    issue_url="$(
+      gh issue create \
+        --title "${title}" \
+        --body-file "${body_file}" \
+        --label "${labels}" \
+        --milestone "${milestone}"
+    )"
+    issue_number="${issue_url##*/}"
+    printf '%s\t%s\n' "${key}" "${issue_number}" >>"${issue_map}"
+    record "issue" "${title}" "created" "issue #${issue_number}"
   fi
 
-  issue_url="$(
-    gh issue create \
-      --title "${title}" \
-      --body-file "${body_file}" \
-      --label "${labels}" \
-      --milestone "${milestone}"
-  )"
-  issue_number="${issue_url##*/}"
-  printf '%s\t%s\n' "${key}" "${issue_number}" >>"${issue_map}"
-  record "issue" "${title}" "created" "issue #${issue_number}"
-
-  if [[ -n "${PROJECT_OWNER:-}" && -n "${PROJECT_NUMBER:-}" ]]; then
-    announce "add issue to project ${PROJECT_OWNER}/${PROJECT_NUMBER}" "${title}"
-    gh project item-add "${PROJECT_NUMBER}" \
-      --owner "${PROJECT_OWNER}" \
-      --url "${issue_url}" >/dev/null
-    record "project-item" "${title}" "created" "${PROJECT_OWNER}/${PROJECT_NUMBER}"
-  fi
+  reconcile_project_item "${issue_url}" "${title}"
 done < <(jq -c '.issues[]' "${catalogue}")
 
 while IFS= read -r relationship; do
@@ -347,4 +401,3 @@ echo "Machine-readable report: ${report}"
 if [[ "${mode}" == "dry-run" ]]; then
   echo "Dry run complete. No GitHub labels, milestones, issues, relationships, or project items were changed."
 fi
-

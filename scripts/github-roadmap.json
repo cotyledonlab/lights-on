@@ -1,12 +1,33 @@
 {
   "milestones": [
-    { "title": "Week 1", "description": "Repository and local developer experience" },
-    { "title": "Weeks 1-2", "description": "Delivery platform" },
-    { "title": "Weeks 2-3", "description": "Hetzner infrastructure definitions" },
-    { "title": "Weeks 3-4", "description": "SaaS foundation" },
-    { "title": "Weeks 4-5", "description": "Product experiment framework" },
-    { "title": "Weeks 5-6", "description": "First external vertical-slice experiment" },
-    { "title": "Weeks 6-8", "description": "Evidence-gated monetisation" }
+    {
+      "title": "Week 1",
+      "description": "Repository and local developer experience"
+    },
+    {
+      "title": "Weeks 1-2",
+      "description": "Delivery platform"
+    },
+    {
+      "title": "Weeks 2-3",
+      "description": "Hetzner infrastructure definitions"
+    },
+    {
+      "title": "Weeks 3-4",
+      "description": "SaaS foundation"
+    },
+    {
+      "title": "Weeks 4-5",
+      "description": "Product experiment framework"
+    },
+    {
+      "title": "Weeks 5-6",
+      "description": "First external vertical-slice experiment"
+    },
+    {
+      "title": "Weeks 6-8",
+      "description": "Evidence-gated monetisation"
+    }
   ],
   "issues": [
     {
@@ -20,7 +41,8 @@
       "hours": "12–20",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "A new developer can clone the repository, run web, worker, and PostgreSQL locally, and verify the primary journey."
+      "outcome": "A new developer can clone the repository, run web, worker, and PostgreSQL locally, and verify the primary journey.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: A new developer can clone the repository, run web, worker, and PostgreSQL locally, and verify the primary journey."
     },
     {
       "key": "i1e1",
@@ -34,7 +56,8 @@
       "hours": "6–10",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "The pnpm and Turborepo workspace builds strict TypeScript applications and shared packages reproducibly."
+      "outcome": "The pnpm and Turborepo workspace builds strict TypeScript applications and shared packages reproducibly.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: The pnpm and Turborepo workspace builds strict TypeScript applications and shared packages reproducibly."
     },
     {
       "key": "i1e2",
@@ -48,7 +71,8 @@
       "hours": "6–10",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "One documented command path starts the local application, worker, and PostgreSQL without external credentials."
+      "outcome": "One documented command path starts the local application, worker, and PostgreSQL without external credentials.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: One documented command path starts the local application, worker, and PostgreSQL without external credentials."
     },
     {
       "key": "i1e3",
@@ -62,7 +86,8 @@
       "hours": "6–10",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "Unit, integration, and browser tests provide repeatable evidence for the primary journey."
+      "outcome": "Unit, integration, and browser tests provide repeatable evidence for the primary journey.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Unit, integration, and browser tests provide repeatable evidence for the primary journey."
     },
     {
       "key": "i1e4",
@@ -76,7 +101,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "Architecture, delivery, operations, product, and runbook documentation has an understandable durable home."
+      "outcome": "Architecture, delivery, operations, product, and runbook documentation has an understandable durable home.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Architecture, delivery, operations, product, and runbook documentation has an understandable durable home."
     },
     {
       "key": "i1e5",
@@ -90,7 +116,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "Repository-scoped agent instructions enforce safe, issue-led, tested, and gated changes."
+      "outcome": "Repository-scoped agent instructions enforce safe, issue-led, tested, and gated changes.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Repository-scoped agent instructions enforce safe, issue-led, tested, and gated changes."
     },
     {
       "key": "i1e6",
@@ -104,7 +131,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 1",
-      "outcome": "GitHub templates, ownership, update policy, labels, and roadmap conventions support disciplined delivery."
+      "outcome": "GitHub templates, ownership, update policy, labels, and roadmap conventions support disciplined delivery.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: GitHub templates, ownership, update policy, labels, and roadmap conventions support disciplined delivery."
     },
     {
       "key": "i1e1s1",
@@ -118,7 +146,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "A clean clone can install pinned tools and dependencies, generate the database client, and build all packages."
+      "outcome": "A clean clone can install pinned tools and dependencies, generate the database client, and build all packages.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: A clean clone can install pinned tools and dependencies, generate the database client, and build all packages."
     },
     {
       "key": "i1e3s1",
@@ -132,7 +161,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "A Playwright test proves signup, submission, worker extraction, human review, result, evidence capture, and deletion."
+      "outcome": "A Playwright test proves signup, submission, worker extraction, human review, result, evidence capture, and deletion.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: A Playwright test proves signup, submission, worker extraction, human review, result, evidence capture, and deletion."
     },
     {
       "key": "gate1",
@@ -146,7 +176,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "A human reviews local setup, CI-equivalent checks, tests, documentation, and secret-scan evidence before external deployment."
+      "outcome": "A human reviews local setup, CI-equivalent checks, tests, documentation, and secret-scan evidence before external deployment.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human reviews local setup, CI-equivalent checks, tests, documentation, and secret-scan evidence before external deployment."
     },
     {
       "key": "i2",
@@ -159,7 +190,8 @@
       "hours": "16–28",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "One immutable image moves through CI to development while production remains manual and reversible."
+      "outcome": "One immutable image moves through CI to development while production remains manual and reversible.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: One immutable image moves through CI to development while production remains manual and reversible."
     },
     {
       "key": "i2e1",
@@ -173,7 +205,8 @@
       "hours": "6–10",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Web and worker images build reproducibly, run without embedded credentials, and are tagged immutably."
+      "outcome": "Web and worker images build reproducibly, run without embedded credentials, and are tagged immutably.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: Web and worker images build reproducibly, run without embedded credentials, and are tagged immutably."
     },
     {
       "key": "i2e2",
@@ -187,7 +220,8 @@
       "hours": "6–10",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "Pull requests and main pushes run frozen install, validation, builds, audits, and security scans with least privilege."
+      "outcome": "Pull requests and main pushes run frozen install, validation, builds, audits, and security scans with least privilege.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Pull requests and main pushes run frozen install, validation, builds, audits, and security scans with least privilege."
     },
     {
       "key": "i2e3",
@@ -201,7 +235,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "CI publishes commit-addressed web and worker images to GHCR with traceable metadata."
+      "outcome": "CI publishes commit-addressed web and worker images to GHCR with traceable metadata.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: CI publishes commit-addressed web and worker images to GHCR with traceable metadata."
     },
     {
       "key": "i2e4",
@@ -215,7 +250,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "A successful main build can deploy the same immutable digest to development and record smoke-test evidence."
+      "outcome": "A successful main build can deploy the same immutable digest to development and record smoke-test evidence.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: A successful main build can deploy the same immutable digest to development and record smoke-test evidence."
     },
     {
       "key": "i2e5",
@@ -229,7 +265,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 5",
-      "outcome": "Production releases require an explicit manual confirmation and proven development artifact."
+      "outcome": "Production releases require an explicit manual confirmation and proven development artifact.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Production releases require an explicit manual confirmation and proven development artifact."
     },
     {
       "key": "i2e6",
@@ -243,7 +280,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 5",
-      "outcome": "Database migrations and application releases have rehearsed, exact failure and rollback procedures."
+      "outcome": "Database migrations and application releases have rehearsed, exact failure and rollback procedures.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Database migrations and application releases have rehearsed, exact failure and rollback procedures."
     },
     {
       "key": "i2e7",
@@ -257,7 +295,8 @@
       "hours": "4–8",
       "confidence": "low",
       "gate": "Gate 3",
-      "outcome": "A documented spike determines whether isolated, temporary Dokploy previews justify their cost and complexity."
+      "outcome": "A documented spike determines whether isolated, temporary Dokploy previews justify their cost and complexity.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: A documented spike determines whether isolated, temporary Dokploy previews justify their cost and complexity."
     },
     {
       "key": "i2e2s1",
@@ -271,7 +310,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 1",
-      "outcome": "The repository validates formatting, lint, types, tests, build, dependencies, secrets, and containers on GitHub-hosted runners."
+      "outcome": "The repository validates formatting, lint, types, tests, build, dependencies, secrets, and containers on GitHub-hosted runners.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: The repository validates formatting, lint, types, tests, build, dependencies, secrets, and containers on GitHub-hosted runners."
     },
     {
       "key": "i3",
@@ -284,7 +324,8 @@
       "hours": "18–30",
       "confidence": "low",
       "gate": "Gate 2",
-      "outcome": "Isolated development and production environments can be recreated from reviewed, parameterized definitions."
+      "outcome": "Isolated development and production environments can be recreated from reviewed, parameterized definitions.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: Isolated development and production environments can be recreated from reviewed, parameterized definitions."
     },
     {
       "key": "i3e1",
@@ -298,7 +339,8 @@
       "hours": "8–14",
       "confidence": "medium",
       "gate": "Gate 2",
-      "outcome": "Reusable modules describe servers, networks, SSH keys, firewalls, labels, and backup configuration without hardcoded environment data."
+      "outcome": "Reusable modules describe servers, networks, SSH keys, firewalls, labels, and backup configuration without hardcoded environment data.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: Reusable modules describe servers, networks, SSH keys, firewalls, labels, and backup configuration without hardcoded environment data."
     },
     {
       "key": "i3e2",
@@ -312,7 +354,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 2",
-      "outcome": "A complete reviewed OpenTofu development plan shows resources, rules, recurring cost, and recovery impact before apply."
+      "outcome": "A complete reviewed OpenTofu development plan shows resources, rules, recurring cost, and recovery impact before apply.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: A complete reviewed OpenTofu development plan shows resources, rules, recurring cost, and recovery impact before apply."
     },
     {
       "key": "i3e3",
@@ -326,7 +369,8 @@
       "hours": "6–12",
       "confidence": "low",
       "gate": "Gate 5",
-      "outcome": "Production is represented independently and remains unapplied until restore, rollback, security, and ownership evidence passes."
+      "outcome": "Production is represented independently and remains unapplied until restore, rollback, security, and ownership evidence passes.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: Production is represented independently and remains unapplied until restore, rollback, security, and ownership evidence passes."
     },
     {
       "key": "i3e4",
@@ -340,7 +384,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 2",
-      "outcome": "Cloud and host firewall policies are deny-by-default, minimal, reviewed, and documented."
+      "outcome": "Cloud and host firewall policies are deny-by-default, minimal, reviewed, and documented.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: Cloud and host firewall policies are deny-by-default, minimal, reviewed, and documented."
     },
     {
       "key": "i3e5",
@@ -354,7 +399,8 @@
       "hours": "8–14",
       "confidence": "medium",
       "gate": "Gate 2",
-      "outcome": "Idempotent roles configure access, updates, Docker, time, logging, backups, and host health safely."
+      "outcome": "Idempotent roles configure access, updates, Docker, time, logging, backups, and host health safely.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: Idempotent roles configure access, updates, Docker, time, logging, backups, and host health safely."
     },
     {
       "key": "i3e6",
@@ -368,7 +414,8 @@
       "hours": "6–12",
       "confidence": "low",
       "gate": "Gate 2",
-      "outcome": "Dokploy installation is automated, versioned, and validated in development before any production use."
+      "outcome": "Dokploy installation is automated, versioned, and validated in development before any production use.",
+      "verification": "Run `make doctor && make build && make docker-build`; attach command output and the relevant smoke or recovery check that proves: Dokploy installation is automated, versioned, and validated in development before any production use."
     },
     {
       "key": "i3e7",
@@ -382,7 +429,8 @@
       "hours": "8–14",
       "confidence": "low",
       "gate": "Gate 5",
-      "outcome": "Encrypted backups are observable and a development restore is proven from an isolated target."
+      "outcome": "Encrypted backups are observable and a development restore is proven from an isolated target.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: Encrypted backups are observable and a development restore is proven from an isolated target."
     },
     {
       "key": "i3e8",
@@ -396,7 +444,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 5",
-      "outcome": "Operators have exact provisioning, recovery, rotation, destruction, and incident procedures."
+      "outcome": "Operators have exact provisioning, recovery, rotation, destruction, and incident procedures.",
+      "verification": "Run `make infra-plan ENV=development` without applying it; attach the saved plan, relevant configuration diff, and a recovery or rollback check that proves: Operators have exact provisioning, recovery, rotation, destruction, and incident procedures."
     },
     {
       "key": "gate0",
@@ -410,7 +459,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 0",
-      "outcome": "A human approves architecture, recurring cost, security, data flows, and initial provider choices before provisioning."
+      "outcome": "A human approves architecture, recurring cost, security, data flows, and initial provider choices before provisioning.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human approves architecture, recurring cost, security, data flows, and initial provider choices before provisioning."
     },
     {
       "key": "gate2",
@@ -424,7 +474,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 2",
-      "outcome": "A human reviews the full plan, resources, cost, firewall rules, and recovery implications before tofu apply."
+      "outcome": "A human reviews the full plan, resources, cost, firewall rules, and recovery implications before tofu apply.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human reviews the full plan, resources, cost, firewall rules, and recovery implications before tofu apply."
     },
     {
       "key": "gate5",
@@ -438,7 +489,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 5",
-      "outcome": "A human approves restore, monitoring, rollback, security, and ownership evidence before production provisioning."
+      "outcome": "A human approves restore, monitoring, rollback, security, and ownership evidence before production provisioning.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human approves restore, monitoring, rollback, security, and ownership evidence before production provisioning."
     },
     {
       "key": "i4",
@@ -451,7 +503,8 @@
       "hours": "24–40",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Users can authenticate and reach measurable value through observable, privacy-aware platform capabilities."
+      "outcome": "Users can authenticate and reach measurable value through observable, privacy-aware platform capabilities.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Users can authenticate and reach measurable value through observable, privacy-aware platform capabilities."
     },
     {
       "key": "i4e1",
@@ -465,7 +518,8 @@
       "hours": "8–14",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Users register, sign in, sign out, recover access, and use secure sessions through the AuthProvider boundary."
+      "outcome": "Users register, sign in, sign out, recover access, and use secure sessions through the AuthProvider boundary.",
+      "verification": "Run `make lint && make typecheck && make test` and `docker run --rm -v \"$PWD:/repo\" ghcr.io/gitleaks/gitleaks:v8.30.1 detect --source=/repo --no-banner --redact`; attach the threat-model or control evidence that proves: Users register, sign in, sign out, recover access, and use secure sessions through the AuthProvider boundary."
     },
     {
       "key": "i4e2",
@@ -479,7 +533,8 @@
       "hours": "8–14",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "The domain supports users and organizations with explicit ownership, roles, and deletion semantics."
+      "outcome": "The domain supports users and organizations with explicit ownership, roles, and deletion semantics.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: The domain supports users and organizations with explicit ownership, roles, and deletion semantics."
     },
     {
       "key": "i4e3",
@@ -493,7 +548,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Development-safe transactional messages use the EmailProvider boundary and expose delivery failures without leaking content."
+      "outcome": "Development-safe transactional messages use the EmailProvider boundary and expose delivery failures without leaking content.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Development-safe transactional messages use the EmailProvider boundary and expose delivery failures without leaking content."
     },
     {
       "key": "i4e4",
@@ -507,7 +563,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Reviewed activation events can be queried without sending sensitive input or unnecessary identifiers."
+      "outcome": "Reviewed activation events can be queried without sending sensitive input or unnecessary identifiers.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Reviewed activation events can be queried without sending sensitive input or unnecessary identifiers."
     },
     {
       "key": "i4e5",
@@ -521,7 +578,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Errors are visible, actionable, and scrubbed of credentials, raw documents, and unnecessary personal data."
+      "outcome": "Errors are visible, actionable, and scrubbed of credentials, raw documents, and unnecessary personal data.",
+      "verification": "Run `make test`; exercise the named failure path and attach the resulting structured log, metric, trace, or alert evidence that proves: Errors are visible, actionable, and scrubbed of credentials, raw documents, and unnecessary personal data."
     },
     {
       "key": "i4e6",
@@ -535,7 +593,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "PostgreSQL-backed work is idempotent, retryable, observable, and operable without Redis."
+      "outcome": "PostgreSQL-backed work is idempotent, retryable, observable, and operable without Redis.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: PostgreSQL-backed work is idempotent, retryable, observable, and operable without Redis."
     },
     {
       "key": "i4e7",
@@ -549,7 +608,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Experiments and risky capabilities can be targeted and disabled through reviewed feature flags."
+      "outcome": "Experiments and risky capabilities can be targeted and disabled through reviewed feature flags.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Experiments and risky capabilities can be targeted and disabled through reviewed feature flags."
     },
     {
       "key": "i4e8",
@@ -563,7 +623,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Privileged operations are authorized, audited, rate-limited, and deliberately narrow."
+      "outcome": "Privileged operations are authorized, audited, rate-limited, and deliberately narrow.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Privileged operations are authorized, audited, rate-limited, and deliberately narrow."
     },
     {
       "key": "i4e9",
@@ -577,7 +638,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "A user can obtain or delete their data through observable, tested, and authorization-safe operations."
+      "outcome": "A user can obtain or delete their data through observable, tested, and authorization-safe operations.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: A user can obtain or delete their data through observable, tested, and authorization-safe operations."
     },
     {
       "key": "gate3",
@@ -591,7 +653,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 3",
-      "outcome": "A human approves authentication, consent, analytics, error handling, and deletion before external users are invited."
+      "outcome": "A human approves authentication, consent, analytics, error handling, and deletion before external users are invited.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human approves authentication, consent, analytics, error handling, and deletion before external users are invited."
     },
     {
       "key": "i5",
@@ -604,7 +667,8 @@
       "hours": "18–30",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "A hypothesis can be launched, manually fulfilled, measured, and decided from observed evidence."
+      "outcome": "A hypothesis can be launched, manually fulfilled, measured, and decided from observed evidence.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: A hypothesis can be launched, manually fulfilled, measured, and decided from observed evidence."
     },
     {
       "key": "i5e1",
@@ -618,7 +682,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 4",
-      "outcome": "Every experiment starts from a falsifiable segment, pain, outcome, activation, and payment hypothesis."
+      "outcome": "Every experiment starts from a falsifiable segment, pain, outcome, activation, and payment hypothesis.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Every experiment starts from a falsifiable segment, pain, outcome, activation, and payment hypothesis."
     },
     {
       "key": "i5e2",
@@ -632,7 +697,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "A reusable accessible template can present a hypothesis and capture one measurable primary action."
+      "outcome": "A reusable accessible template can present a hypothesis and capture one measurable primary action.",
+      "verification": "Run `make test-e2e`; attach the named browser test plus screenshots at 390×844 and 1440×900 that prove: A reusable accessible template can present a hypothesis and capture one measurable primary action."
     },
     {
       "key": "i5e3",
@@ -646,7 +712,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Consenting participants can join a waitlist and opt into interviews with minimal data collection."
+      "outcome": "Consenting participants can join a waitlist and opt into interviews with minimal data collection.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Consenting participants can join a waitlist and opt into interviews with minimal data collection."
     },
     {
       "key": "i5e4",
@@ -660,7 +727,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 3",
-      "outcome": "Acquisition, activation, fulfilment, retention, and payment events have stable reviewed meanings."
+      "outcome": "Acquisition, activation, fulfilment, retention, and payment events have stable reviewed meanings.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Acquisition, activation, fulfilment, retention, and payment events have stable reviewed meanings."
     },
     {
       "key": "i5e5",
@@ -674,7 +742,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Authorized humans can fulfil experiment work and record effort, corrections, and completion safely."
+      "outcome": "Authorized humans can fulfil experiment work and record effort, corrections, and completion safely.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Authorized humans can fulfil experiment work and record effort, corrections, and completion safely."
     },
     {
       "key": "i5e6",
@@ -688,7 +757,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "Decision-makers can compare delivery, behavior, qualitative evidence, accuracy, effort, and payment signals."
+      "outcome": "Decision-makers can compare delivery, behavior, qualitative evidence, accuracy, effort, and payment signals.",
+      "verification": "Run `make test-e2e`; attach the named browser test plus screenshots at 390×844 and 1440×900 that prove: Decision-makers can compare delivery, behavior, qualitative evidence, accuracy, effort, and payment signals."
     },
     {
       "key": "i5e7",
@@ -702,7 +772,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 4",
-      "outcome": "Continue, Iterate, Pause, Reject, or Scale decisions cite supporting and counter evidence."
+      "outcome": "Continue, Iterate, Pause, Reject, or Scale decisions cite supporting and counter evidence.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Continue, Iterate, Pause, Reject, or Scale decisions cite supporting and counter evidence."
     },
     {
       "key": "i5e8",
@@ -716,7 +787,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "A reviewed experiment decision produces an explicit stop, revision, pause, rejection, or scale action."
+      "outcome": "A reviewed experiment decision produces an explicit stop, revision, pause, rejection, or scale action.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: A reviewed experiment decision produces an explicit stop, revision, pause, rejection, or scale action."
     },
     {
       "key": "gate4",
@@ -730,7 +802,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 4",
-      "outcome": "A human reviews external completion, manual effort, accuracy, user language, and payment intent before automation."
+      "outcome": "A human reviews external completion, manual effort, accuracy, user language, and payment intent before automation.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human reviews external completion, manual effort, accuracy, user language, and payment intent before automation."
     },
     {
       "key": "i6",
@@ -743,7 +816,8 @@
       "hours": "24–40",
       "confidence": "low",
       "gate": "Gate 4",
-      "outcome": "At least five external users complete the receipt journey and produce measured effort, accuracy, feedback, and payment evidence."
+      "outcome": "At least five external users complete the receipt journey and produce measured effort, accuracy, feedback, and payment evidence.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: At least five external users complete the receipt journey and produce measured effort, accuracy, feedback, and payment evidence."
     },
     {
       "key": "i6e1",
@@ -757,7 +831,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "The receipt experiment has a target segment, thresholds, stop conditions, method, and evidence plan."
+      "outcome": "The receipt experiment has a target segment, thresholds, stop conditions, method, and evidence plan.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: The receipt experiment has a target segment, thresholds, stop conditions, method, and evidence plan."
     },
     {
       "key": "i6e2",
@@ -771,7 +846,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "Participants understand the data, purpose, human access, retention, deletion, and experiment limitations before submission."
+      "outcome": "Participants understand the data, purpose, human access, retention, deletion, and experiment limitations before submission.",
+      "verification": "Run `make lint && make typecheck && make test` and `docker run --rm -v \"$PWD:/repo\" ghcr.io/gitleaks/gitleaks:v8.30.1 detect --source=/repo --no-banner --redact`; attach the threat-model or control evidence that proves: Participants understand the data, purpose, human access, retention, deletion, and experiment limitations before submission."
     },
     {
       "key": "i6e3",
@@ -785,7 +861,8 @@
       "hours": "6–12",
       "confidence": "low",
       "gate": "Gate 3",
-      "outcome": "Consenting users can submit the approved receipt format through a validated, rate-limited, ownership-safe path."
+      "outcome": "Consenting users can submit the approved receipt format through a validated, rate-limited, ownership-safe path.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Consenting users can submit the approved receipt format through a validated, rate-limited, ownership-safe path."
     },
     {
       "key": "i6e4",
@@ -799,7 +876,8 @@
       "hours": "6–12",
       "confidence": "low",
       "gate": "Gate 4",
-      "outcome": "The extraction boundary produces evaluated fields and keeps model output separate from human-corrected truth."
+      "outcome": "The extraction boundary produces evaluated fields and keeps model output separate from human-corrected truth.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: The extraction boundary produces evaluated fields and keeps model output separate from human-corrected truth."
     },
     {
       "key": "i6e5",
@@ -813,7 +891,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "An authorized human can compare source and extraction, correct fields, and record time and changes."
+      "outcome": "An authorized human can compare source and extraction, correct fields, and record time and changes.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: An authorized human can compare source and extraction, correct fields, and record time and changes."
     },
     {
       "key": "i6e6",
@@ -827,7 +906,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 3",
-      "outcome": "The submitting user alone can view a clear structured result and its human-verification status."
+      "outcome": "The submitting user alone can view a clear structured result and its human-verification status.",
+      "verification": "Run `make test-e2e`; attach the named browser test plus screenshots at 390×844 and 1440×900 that prove: The submitting user alone can view a clear structured result and its human-verification status."
     },
     {
       "key": "i6e7",
@@ -841,7 +921,8 @@
       "hours": "4–8",
       "confidence": "high",
       "gate": "Gate 4",
-      "outcome": "The full funnel from landing view through result and payment response is measurable with reviewed events."
+      "outcome": "The full funnel from landing view through result and payment response is measurable with reviewed events.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: The full funnel from landing view through result and payment response is measurable with reviewed events."
     },
     {
       "key": "i6e8",
@@ -855,7 +936,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "Participant interviews capture their language, workaround, perceived value, doubts, and requested outcome."
+      "outcome": "Participant interviews capture their language, workaround, perceived value, doubts, and requested outcome.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Participant interviews capture their language, workaround, perceived value, doubts, and requested outcome."
     },
     {
       "key": "i6e9",
@@ -869,7 +951,8 @@
       "hours": "4–8",
       "confidence": "low",
       "gate": "Gate 4",
-      "outcome": "Users see a concrete price and provide an interpretable payment or commitment signal without live charging."
+      "outcome": "Users see a concrete price and provide an interpretable payment or commitment signal without live charging.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Users see a concrete price and provide an interpretable payment or commitment signal without live charging."
     },
     {
       "key": "i6e1s1",
@@ -883,7 +966,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 4",
-      "outcome": "The first external test has explicit completion, accuracy, effort, interview, and payment thresholds before recruitment."
+      "outcome": "The first external test has explicit completion, accuracy, effort, interview, and payment thresholds before recruitment.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: The first external test has explicit completion, accuracy, effort, interview, and payment thresholds before recruitment."
     },
     {
       "key": "i7",
@@ -896,7 +980,8 @@
       "hours": "20–32",
       "confidence": "low",
       "gate": "Gate 6",
-      "outcome": "An evidence-backed test customer can complete safe test-mode billing while live mode remains human-gated."
+      "outcome": "An evidence-backed test customer can complete safe test-mode billing while live mode remains human-gated.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: An evidence-backed test customer can complete safe test-mode billing while live mode remains human-gated."
     },
     {
       "key": "i7e1",
@@ -910,7 +995,8 @@
       "hours": "4–8",
       "confidence": "low",
       "gate": "Gate 4",
-      "outcome": "Price, unit, segment, expected behavior, and falsification threshold are documented from observed evidence."
+      "outcome": "Price, unit, segment, expected behavior, and falsification threshold are documented from observed evidence.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Price, unit, segment, expected behavior, and falsification threshold are documented from observed evidence."
     },
     {
       "key": "i7e2",
@@ -924,7 +1010,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Stripe test mode implements the BillingProvider boundary with isolated credentials and no live capability."
+      "outcome": "Stripe test mode implements the BillingProvider boundary with isolated credentials and no live capability.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Stripe test mode implements the BillingProvider boundary with isolated credentials and no live capability."
     },
     {
       "key": "i7e3",
@@ -938,7 +1025,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "A test customer can understand the offer and complete a server-created test checkout session."
+      "outcome": "A test customer can understand the offer and complete a server-created test checkout session.",
+      "verification": "Run `make test-e2e`; attach the named browser test plus screenshots at 390×844 and 1440×900 that prove: A test customer can understand the offer and complete a server-created test checkout session."
     },
     {
       "key": "i7e4",
@@ -952,7 +1040,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Signed billing webhooks are idempotent, replay-safe, observable, and processed asynchronously."
+      "outcome": "Signed billing webhooks are idempotent, replay-safe, observable, and processed asynchronously.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Signed billing webhooks are idempotent, replay-safe, observable, and processed asynchronously."
     },
     {
       "key": "i7e5",
@@ -966,7 +1055,8 @@
       "hours": "6–12",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Server-side billing state is the authoritative source for product entitlements."
+      "outcome": "Server-side billing state is the authoritative source for product entitlements.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Server-side billing state is the authoritative source for product entitlements."
     },
     {
       "key": "i7e6",
@@ -980,7 +1070,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "A test customer can manage supported billing details and cancellation through an authenticated portal."
+      "outcome": "A test customer can manage supported billing details and cancellation through an authenticated portal.",
+      "verification": "Run `make test-e2e`; attach the named browser test plus screenshots at 390×844 and 1440×900 that prove: A test customer can manage supported billing details and cancellation through an authenticated portal."
     },
     {
       "key": "i7e7",
@@ -994,7 +1085,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Failed test payments change entitlement and communication state predictably without duplicate side effects."
+      "outcome": "Failed test payments change entitlement and communication state predictably without duplicate side effects.",
+      "verification": "Run `make test && make test-e2e`; attach the named unit or PostgreSQL integration case and its assertions that prove: Failed test payments change entitlement and communication state predictably without duplicate side effects."
     },
     {
       "key": "i7e8",
@@ -1008,7 +1100,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Refund and cancellation behavior is tested and documented for users and operators."
+      "outcome": "Refund and cancellation behavior is tested and documented for users and operators.",
+      "verification": "Run `make format-check && make lint && make typecheck && make test && make build`; link the green CI run and the specific delivery artifact that proves: Refund and cancellation behavior is tested and documented for users and operators."
     },
     {
       "key": "i7e9",
@@ -1022,7 +1115,8 @@
       "hours": "4–8",
       "confidence": "medium",
       "gate": "Gate 6",
-      "outcome": "Test revenue, conversion, cancellation, refund, and payment failure events have stable reviewed definitions."
+      "outcome": "Test revenue, conversion, cancellation, refund, and payment failure events have stable reviewed definitions.",
+      "verification": "Attach a dated evidence table with source links, sample size, pass/fail threshold, counter-evidence, and the decision showing whether the observations prove: Test revenue, conversion, cancellation, refund, and payment failure events have stable reviewed definitions."
     },
     {
       "key": "i7e10",
@@ -1036,7 +1130,8 @@
       "hours": "4–8",
       "confidence": "low",
       "gate": "Gate 6",
-      "outcome": "A human can evaluate pricing, legal and tax review, support, refunds, cancellation, security, and customer readiness before live mode."
+      "outcome": "A human can evaluate pricing, legal and tax review, support, refunds, cancellation, security, and customer readiness before live mode.",
+      "verification": "Run `make lint && make typecheck && make test` and `docker run --rm -v \"$PWD:/repo\" ghcr.io/gitleaks/gitleaks:v8.30.1 detect --source=/repo --no-banner --redact`; attach the threat-model or control evidence that proves: A human can evaluate pricing, legal and tax review, support, refunds, cancellation, security, and customer readiness before live mode."
     },
     {
       "key": "gate6",
@@ -1050,7 +1145,8 @@
       "hours": "2–4",
       "confidence": "high",
       "gate": "Gate 6",
-      "outcome": "A human approves pricing, legal and tax review, refund, cancellation, support, and a ready customer before Stripe live mode."
+      "outcome": "A human approves pricing, legal and tax review, refund, cancellation, support, and a ready customer before Stripe live mode.",
+      "verification": "Attach the gate evidence report, link every cited artifact, and record the explicit human decision that proves: A human approves pricing, legal and tax review, refund, cancellation, support, and a ready customer before Stripe live mode."
     }
   ]
 }
