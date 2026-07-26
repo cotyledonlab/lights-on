@@ -50,6 +50,38 @@ if ! jq -e '
   exit 1
 fi
 
+if ! jq -e '
+  def verifies($pattern):
+    .verification | test($pattern; "i");
+  .issues
+  | all(
+      if (.outcome | test("Playwright|browser"; "i")) then
+        verifies("test-e2e|browser")
+      elif .title == "Epic — Development environment" then
+        verifies("infra-plan ENV=development")
+      elif .title == "Epic — Production environment" then
+        verifies("infra-plan ENV=production")
+      elif (.title | test("OpenTofu"; "i")) then
+        verifies("OpenTofu") and verifies("infra-plan")
+      elif (.title | test("Ansible"; "i")) then
+        verifies("ansible-playbook")
+      elif (.title | test("Backup and restore"; "i")) then
+        verifies("backup") and verifies("restore")
+      elif .kind == "gate" then
+        verifies("gate evidence") and verifies("human decision|decision")
+      elif (.outcome | test("At least five external users"; "i")) then
+        verifies("at least five") and verifies("evidence table")
+      elif (.title | test("Consent and privacy"; "i")) then
+        verifies("test-e2e") and verifies("privacy review")
+      else
+        true
+      end
+    )
+' "${catalogue}" >/dev/null; then
+  echo "Roadmap verification does not exercise its outcome-specific evidence class." >&2
+  exit 1
+fi
+
 echo "Verifying GitHub authentication."
 gh auth status >/dev/null
 
