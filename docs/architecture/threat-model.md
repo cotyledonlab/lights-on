@@ -24,7 +24,7 @@ receipt text crosses an untrusted-input boundary.
 | Session theft           | Random opaque tokens, SHA-256 storage, HTTP-only SameSite cookies, Secure in production | No external identity assurance             |
 | Reviewer impersonation  | Constant-time access-code comparison and separate reviewer session                      | Shared-code auth is local-only             |
 | CSRF                    | SameSite cookies and Next.js Server Action origin validation                            | Reassess when external auth is added       |
-| Public mutation abuse   | Zod validation, body limits, and process-local rate limits                              | Multi-instance rate limiting is deferred   |
+| Public mutation abuse   | Zod/body limits; rate-limit identity ignores proxy headers by default                   | Multi-instance rate limiting is deferred   |
 | Injection               | Prisma parameterization and escaped React output                                        | Dependencies still require scanning        |
 | Sensitive logs          | Structured logging allow-list; no raw input, email, or token logging                    | Operator discipline remains required       |
 | Privilege confusion     | Participant-owned queries and reviewer-only mutations                                   | Add role-based external auth before Gate 3 |

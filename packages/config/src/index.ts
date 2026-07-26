@@ -6,7 +6,11 @@ const serverEnvironmentSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://127.0.0.1:3000"),
   PARTICIPANT_COOKIE_SECRET: z.string().min(32),
   REVIEWER_ACCESS_CODE: z.string().min(12),
-  REVIEWER_COOKIE_SECRET: z.string().min(32)
+  REVIEWER_COOKIE_SECRET: z.string().min(32),
+  TRUST_PROXY_HEADERS: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true")
 });
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;

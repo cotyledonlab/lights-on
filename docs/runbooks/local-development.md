@@ -20,6 +20,11 @@ curl --fail http://localhost:3000/api/health
 `TEST_DATABASE_URL`. The command refuses to start unless that schema ends in `_test`; it
 never cleans the normal development schema.
 
+Forwarding headers do not affect the local process rate-limit identity. Leave
+`TRUST_PROXY_HEADERS=false` unless the application is deployed behind a reviewed proxy
+that overwrites inbound `X-Forwarded-For` and `X-Real-IP` values. Without that trusted
+boundary, all direct requests deliberately share one conservative rate-limit bucket.
+
 ## Stop
 
 Stop the foreground development command, then run:
