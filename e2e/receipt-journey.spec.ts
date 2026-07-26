@@ -137,4 +137,7 @@ test("participant receives a human-checked structured result", async ({ page }) 
   await expect(
     database.participant.findUnique({ where: { id: participant.id } })
   ).resolves.toBeNull();
+  await expect(
+    database.queueJob.findUnique({ where: { jobKey: submission.id } })
+  ).resolves.toBeNull();
 });

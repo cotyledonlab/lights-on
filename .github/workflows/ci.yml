@@ -19,6 +19,7 @@ env:
   PARTICIPANT_COOKIE_SECRET: ci-participant-cookie-secret-000000000000000000
   REVIEWER_ACCESS_CODE: ci-review-code
   REVIEWER_COOKIE_SECRET: ci-reviewer-cookie-secret-00000000000000000000
+  TEST_DATABASE_URL: postgresql://lights_on:lights_on_ci@127.0.0.1:5432/lights_on?schema=lights_on_ci_test
 
 jobs:
   validate:

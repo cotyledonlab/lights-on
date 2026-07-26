@@ -276,7 +276,16 @@ export async function recordPaymentInterestAction(
 export async function deleteParticipantDataAction(): Promise<void> {
   const participantId = await currentParticipantId();
   if (participantId) {
-    await database.participant.deleteMany({ where: { id: participantId } });
+    await database.$transaction(async (transaction) => {
+      const submissions = await transaction.submission.findMany({
+        select: { id: true },
+        where: { participantId }
+      });
+      await transaction.queueJob.deleteMany({
+        where: { jobKey: { in: submissions.map((submission) => submission.id) } }
+      });
+      await transaction.participant.deleteMany({ where: { id: participantId } });
+    });
   }
   const cookieStore = await cookies();
   cookieStore.delete(participantCookieName);

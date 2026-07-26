@@ -19,7 +19,7 @@
     "lint": "eslint 'e2e/**/*.ts' playwright.config.ts && turbo run lint",
     "test": "turbo run test",
     "test:e2e": "playwright test",
-    "test:integration": "turbo run test:integration",
+    "test:integration": "./scripts/run-integration-tests.sh",
     "typecheck": "tsc --noEmit && turbo run typecheck"
   },
   "devDependencies": {

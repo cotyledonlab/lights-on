@@ -12,8 +12,13 @@ make dev
 
 ```bash
 make doctor
+make test
 curl --fail http://localhost:3000/api/health
 ```
+
+`make test` runs destructive integration fixtures only in the PostgreSQL schema named by
+`TEST_DATABASE_URL`. The command refuses to start unless that schema ends in `_test`; it
+never cleans the normal development schema.
 
 ## Stop
 

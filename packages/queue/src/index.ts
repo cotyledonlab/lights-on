@@ -19,6 +19,8 @@ export interface JobQueue {
 }
 
 export class PostgresJobQueue implements JobQueue {
+  constructor(private readonly lockTimeoutMs = 5 * 60_000) {}
+
   async enqueue(
     name: string,
     jobKey: string,
@@ -33,23 +35,52 @@ export class PostgresJobQueue implements JobQueue {
   }
 
   async claim(): Promise<ClaimedJob | null> {
-    const claimed = await database.$queryRaw<QueueJob[]>(Prisma.sql`
-      UPDATE "QueueJob"
-      SET
-        "status" = 'RUNNING',
-        "lockedAt" = NOW(),
-        "attempts" = "attempts" + 1,
-        "updatedAt" = NOW()
-      WHERE "id" = (
-        SELECT "id"
-        FROM "QueueJob"
-        WHERE "status" = 'AVAILABLE' AND "runAt" <= NOW()
-        ORDER BY "runAt" ASC, "createdAt" ASC
-        FOR UPDATE SKIP LOCKED
-        LIMIT 1
-      )
-      RETURNING *
-    `);
+    const staleBefore = new Date(Date.now() - this.lockTimeoutMs);
+    const claimed = await database.$transaction(async (transaction) => {
+      await transaction.$executeRaw(Prisma.sql`
+        UPDATE "QueueJob"
+        SET
+          "status" = 'FAILED',
+          "lockedAt" = NULL,
+          "lastError" = 'stale_lock_max_attempts',
+          "updatedAt" = NOW()
+        WHERE
+          "status" = 'RUNNING'
+          AND "lockedAt" <= ${staleBefore}
+          AND "attempts" >= "maxAttempts"
+      `);
+
+      return transaction.$queryRaw<QueueJob[]>(Prisma.sql`
+        UPDATE "QueueJob"
+        SET
+          "status" = 'RUNNING',
+          "lockedAt" = NOW(),
+          "attempts" = "attempts" + 1,
+          "lastError" = CASE
+            WHEN "status" = 'RUNNING' THEN 'stale_lock_reclaimed'
+            ELSE "lastError"
+          END,
+          "updatedAt" = NOW()
+        WHERE "id" = (
+          SELECT "id"
+          FROM "QueueJob"
+          WHERE
+            (
+              "status" = 'AVAILABLE'
+              AND "runAt" <= NOW()
+            )
+            OR (
+              "status" = 'RUNNING'
+              AND "lockedAt" <= ${staleBefore}
+              AND "attempts" < "maxAttempts"
+            )
+          ORDER BY "runAt" ASC, "createdAt" ASC
+          FOR UPDATE SKIP LOCKED
+          LIMIT 1
+        )
+        RETURNING *
+      `);
+    });
 
     const job = claimed[0];
     return job
