@@ -2,33 +2,31 @@
 
 ## Outcome
 
-A new developer can clone the repository, start PostgreSQL, run the web and
-worker processes, complete the synthetic receipt-review journey, and run the
-same checks used by basic CI. GitHub roadmap automation is inspectable and
-safe-by-default, but is not applied during Phase 1.
+A new developer can clone the repository, start PostgreSQL, run the web and worker
+processes, complete the synthetic receipt-review journey, and run the same checks used
+by basic CI. GitHub roadmap automation is inspectable and safe-by-default, but is not
+applied during Phase 1.
 
 ## Scope
 
-1. Establish repository governance, ADRs, delivery documentation, and issue
-   templates.
+1. Establish repository governance, ADRs, delivery documentation, and issue templates.
 2. Create a pnpm/Turborepo TypeScript monorepo with strict type checking.
 3. Add a Next.js App Router web app and a PostgreSQL-backed worker.
 4. Define provider boundaries and local/fake implementations.
 5. Add local PostgreSQL through Docker Compose.
-6. Implement the landing, signup, submission, extraction, human review,
-   result, analytics, payment-interest, health, and deletion paths.
+6. Implement the landing, signup, submission, extraction, human review, result,
+   analytics, payment-interest, health, and deletion paths.
 7. Add unit, integration, browser, build, and container checks.
 8. Add least-privilege basic CI.
-9. Add dry-run-first GitHub roadmap automation and its manual project setup
-   guide.
+9. Add dry-run-first GitHub roadmap automation and its manual project setup guide.
 10. Capture Gate 1 evidence and stop.
 
 ## Out of scope
 
 - Hetzner, DNS, Dokploy, object-storage, or other external provisioning.
 - Preview, development, or production deployment.
-- Real authentication, billing, email, analytics, object storage, or AI
-  provider credentials.
+- Real authentication, billing, email, analytics, object storage, or AI provider
+  credentials.
 - Arbitrary file upload or live receipt extraction.
 - Stripe live or test mode.
 - GitHub issue, label, milestone, or project mutation during Phase 1.
@@ -66,11 +64,10 @@ git grep -nE '(BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|AKIA[0-9A-Z]{16})'
 - Size: decomposed (the overall phase is XL)
 - Focused engineering hours: 29–49
 - Confidence: medium
-- Key uncertainty: cross-package build and database-backed browser-test
-  behavior on the local macOS/Docker toolchain
+- Key uncertainty: cross-package build and database-backed browser-test behavior on the
+  local macOS/Docker toolchain
 
 ## Human stop gate
 
-Gate 1 is a human decision. Passing local checks supplies evidence but does not
-approve deployment, roadmap mutation, or Phase 2.
-
+Gate 1 is a human decision. Passing local checks supplies evidence but does not approve
+deployment, roadmap mutation, or Phase 2.

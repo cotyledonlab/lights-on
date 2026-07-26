@@ -5,8 +5,8 @@
 
 ## Context
 
-The thin slice needs asynchronous extraction, but low idle cost is more
-important than extreme queue throughput.
+The thin slice needs asynchronous extraction, but low idle cost is more important than
+extreme queue throughput.
 
 ## Decision
 
@@ -17,7 +17,6 @@ transactions, records attempts, and uses idempotent job identifiers.
 
 - Local development needs only PostgreSQL.
 - Business data and queue operations share backup and operational tooling.
-- Polling is sufficient for experiment volume but is not intended for
-  high-throughput scheduling.
+- Polling is sufficient for experiment volume but is not intended for high-throughput
+  scheduling.
 - Redis will be considered only after a measured latency or contention problem.
-

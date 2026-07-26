@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SessionKind {
+  PARTICIPANT
+  REVIEWER
+}
+
+enum SubmissionStatus {
+  QUEUED
+  AWAITING_REVIEW
+  COMPLETED
+  FAILED
+}
+
+enum ReviewStatus {
+  PENDING
+  COMPLETED
+}
+
+enum QueueJobStatus {
+  AVAILABLE
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum PaymentInterest {
+  INTERESTED
+  UNSURE
+  NOT_INTERESTED
+}
+
+model Participant {
+  id             String           @id @default(uuid()) @db.Uuid
+  email          String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  analytics      AnalyticsEvent[]
+  consents       ConsentRecord[]
+  paymentSignals PaymentSignal[]
+  sessions       AuthSession[]
+  submissions    Submission[]
+}
+
+model ConsentRecord {
+  id            String      @id @default(uuid()) @db.Uuid
+  participantId String      @db.Uuid
+  version       String
+  purpose       String
+  grantedAt     DateTime    @default(now())
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([participantId])
+}
+
+model AuthSession {
+  id            String       @id @default(uuid()) @db.Uuid
+  kind          SessionKind
+  tokenDigest   String       @unique
+  participantId String?      @db.Uuid
+  expiresAt     DateTime
+  createdAt     DateTime     @default(now())
+  participant   Participant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([participantId])
+  @@index([expiresAt])
+}
+
+model Submission {
+  id                 String            @id @default(uuid()) @db.Uuid
+  participantId      String            @db.Uuid
+  rawText            String
+  status             SubmissionStatus  @default(QUEUED)
+  extractedVendor    String?
+  extractedPurchasedAt DateTime?
+  extractedTotalCents Int?
+  extractedCurrency  String?
+  failureCode        String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  analytics          AnalyticsEvent[]
+  participant        Participant       @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  paymentSignals     PaymentSignal[]
+  result             ReceiptResult?
+  reviewJob          ReviewJob?
+
+  @@index([participantId, createdAt])
+  @@index([status])
+}
+
+model ReviewJob {
+  id          String       @id @default(uuid()) @db.Uuid
+  submissionId String      @unique @db.Uuid
+  status      ReviewStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  completedAt DateTime?
+  submission  Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+model ReceiptResult {
+  id          String     @id @default(uuid()) @db.Uuid
+  submissionId String    @unique @db.Uuid
+  vendor      String
+  purchasedAt DateTime
+  totalCents  Int
+  currency    String
+  notes       String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  submission  Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticsEvent {
+  id            String       @id @default(uuid()) @db.Uuid
+  name          String
+  participantId String?      @db.Uuid
+  submissionId  String?      @db.Uuid
+  properties    Json?
+  occurredAt    DateTime     @default(now())
+  participant   Participant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  submission    Submission?  @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([name, occurredAt])
+  @@index([participantId])
+  @@index([submissionId])
+}
+
+model PaymentSignal {
+  id            String          @id @default(uuid()) @db.Uuid
+  participantId String          @db.Uuid
+  submissionId  String          @db.Uuid
+  response      PaymentInterest
+  priceCents    Int
+  currency      String
+  createdAt     DateTime        @default(now())
+  participant   Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  submission    Submission      @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([participantId, createdAt])
+  @@unique([participantId, submissionId])
+}
+
+model QueueJob {
+  id          String         @id @default(uuid()) @db.Uuid
+  name        String
+  jobKey      String         @unique
+  payload     Json
+  status      QueueJobStatus @default(AVAILABLE)
+  runAt       DateTime       @default(now())
+  lockedAt    DateTime?
+  attempts    Int            @default(0)
+  maxAttempts Int            @default(3)
+  lastError   String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([status, runAt, createdAt])
+}

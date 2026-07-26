@@ -1,0 +1,22 @@
+name: lights-on
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-lights_on}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lights_on_local}
+      POSTGRES_USER: ${POSTGRES_USER:-lights_on}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

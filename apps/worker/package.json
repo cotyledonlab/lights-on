@@ -1,0 +1,30 @@
+{
+  "name": "@lights-on/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --out-dir dist",
+    "clean": "rm -rf dist",
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint src tests",
+    "start": "tsx src/index.ts",
+    "test": "vitest run --exclude 'tests/integration/**' --passWithNoTests",
+    "test:integration": "vitest run tests/integration",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lights-on/database": "workspace:*",
+    "@lights-on/extraction": "workspace:*",
+    "@lights-on/observability": "workspace:*",
+    "@lights-on/queue": "workspace:*",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "tsx": "4.23.1",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}
