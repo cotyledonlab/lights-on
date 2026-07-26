@@ -1,5 +1,10 @@
 import { database } from "@lights-on/database";
-import { jobQueue, PostgresJobQueue } from "@lights-on/queue";
+import {
+  jobQueue,
+  PostgresJobQueue,
+  type ClaimedJob,
+  type JobQueue
+} from "@lights-on/queue";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { processNextJob } from "../../src/process-job";
@@ -47,9 +52,16 @@ describe("receipt extraction job", () => {
         rawText: "Merchant: Harbour Books\nDate: 2026-07-05\nTotal: EUR 18.40"
       }
     });
-    await jobQueue.enqueue("receipt.extract", submission.id, {
-      submissionId: submission.id
-    });
+    await jobQueue.enqueue(
+      "receipt.extract",
+      submission.id,
+      {
+        submissionId: submission.id
+      },
+      {
+        submissionId: submission.id
+      }
+    );
 
     await expect(processNextJob()).resolves.toBe(true);
 
@@ -73,7 +85,8 @@ describe("receipt extraction job", () => {
       fixture: true
     });
 
-    await expect(queue.claim()).resolves.toMatchObject({
+    const firstClaim = await queue.claim();
+    expect(firstClaim).toMatchObject({
       attempts: 1,
       id: jobId
     });
@@ -82,9 +95,143 @@ describe("receipt extraction job", () => {
       where: { id: jobId }
     });
 
-    await expect(queue.claim()).resolves.toMatchObject({
+    const secondClaim = await queue.claim();
+    expect(secondClaim).toMatchObject({
       attempts: 2,
       id: jobId
+    });
+
+    await expect(
+      queue.complete(jobId, (firstClaim as ClaimedJob).attempts)
+    ).resolves.toBe("stale_or_cancelled");
+    await expect(
+      queue.fail(jobId, (firstClaim as ClaimedJob).attempts, false, "stale_worker")
+    ).resolves.toEqual({ outcome: "stale_or_cancelled" });
+    await expect(
+      database.queueJob.findUnique({ where: { id: jobId } })
+    ).resolves.toMatchObject({
+      attempts: 2,
+      status: "RUNNING"
+    });
+    await expect(
+      queue.complete(jobId, (secondClaim as ClaimedJob).attempts)
+    ).resolves.toBe("applied");
+  });
+
+  it("cascades a linked queue job created concurrently with participant deletion", async () => {
+    const participant = await database.participant.create({
+      data: { email: "concurrent-delete@example.test" }
+    });
+    let signalSubmissionCreated = () => {};
+    const submissionCreated = new Promise<void>((resolve) => {
+      signalSubmissionCreated = resolve;
+    });
+    let releaseSubmission = () => {};
+    const mayFinishSubmission = new Promise<void>((resolve) => {
+      releaseSubmission = resolve;
+    });
+
+    const createSubmission = database.$transaction(async (transaction) => {
+      const submission = await transaction.submission.create({
+        data: {
+          participantId: participant.id,
+          rawText: "Merchant: Concurrent Shop\nDate: 2026-07-05\nTotal: EUR 4.20"
+        }
+      });
+      signalSubmissionCreated();
+      await mayFinishSubmission;
+      await jobQueue.enqueue(
+        "receipt.extract",
+        submission.id,
+        { submissionId: submission.id },
+        { submissionId: submission.id, transaction }
+      );
+      return submission;
+    });
+
+    await submissionCreated;
+    const deleteParticipant = Promise.resolve(
+      database.participant.deleteMany({ where: { id: participant.id } })
+    );
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    releaseSubmission();
+    const [submission] = await Promise.all([createSubmission, deleteParticipant]);
+
+    await expect(
+      database.participant.count({ where: { id: participant.id } })
+    ).resolves.toBe(0);
+    await expect(
+      database.submission.count({ where: { id: submission.id } })
+    ).resolves.toBe(0);
+    await expect(
+      database.queueJob.count({ where: { submissionId: submission.id } })
+    ).resolves.toBe(0);
+  });
+
+  it("treats deletion during processing as cancellation without throwing", async () => {
+    const participant = await database.participant.create({
+      data: { email: "in-flight-delete@example.test" }
+    });
+    const submission = await database.submission.create({
+      data: {
+        participantId: participant.id,
+        rawText: "Merchant: Vanishing Shop\nDate: 2026-07-05\nTotal: EUR 7.20"
+      }
+    });
+    await jobQueue.enqueue(
+      "receipt.extract",
+      submission.id,
+      { submissionId: submission.id },
+      { submissionId: submission.id }
+    );
+    const deletingQueue: JobQueue = {
+      claim: () => jobQueue.claim(),
+      complete: async (jobId, expectedAttempt) => {
+        await database.participant.deleteMany({ where: { id: participant.id } });
+        return jobQueue.complete(jobId, expectedAttempt);
+      },
+      enqueue: (name, jobKey, payload, options) =>
+        jobQueue.enqueue(name, jobKey, payload, options),
+      fail: (jobId, expectedAttempt, retryable, errorCode) =>
+        jobQueue.fail(jobId, expectedAttempt, retryable, errorCode)
+    };
+
+    await expect(processNextJob(deletingQueue)).resolves.toBe(true);
+    await expect(
+      database.queueJob.count({ where: { submissionId: submission.id } })
+    ).resolves.toBe(0);
+  });
+
+  it("marks the submission failed when a job reaches a terminal failure", async () => {
+    const participant = await database.participant.create({
+      data: { email: "terminal-failure@example.test" }
+    });
+    const submission = await database.submission.create({
+      data: {
+        participantId: participant.id,
+        rawText: "Merchant: Invalid Payload Shop"
+      }
+    });
+    await jobQueue.enqueue(
+      "receipt.extract",
+      submission.id,
+      { invalid: true },
+      { submissionId: submission.id }
+    );
+
+    await expect(processNextJob()).resolves.toBe(true);
+
+    await expect(
+      database.submission.findUnique({ where: { id: submission.id } })
+    ).resolves.toMatchObject({
+      failureCode: "invalid_payload",
+      status: "FAILED"
+    });
+    await expect(
+      database.queueJob.findFirst({ where: { submissionId: submission.id } })
+    ).resolves.toMatchObject({
+      lastError: "invalid_payload",
+      status: "FAILED"
     });
   });
 });

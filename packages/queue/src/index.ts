@@ -5,17 +5,39 @@ export interface ClaimedJob {
   id: string;
   name: string;
   payload: unknown;
+  submissionId: string | null;
+}
+
+export interface EnqueueOptions {
+  submissionId?: string;
+  transaction?: Prisma.TransactionClient;
+}
+
+export type LeaseMutationResult = "applied" | "stale_or_cancelled";
+
+export type FailureResult =
+  { outcome: "failed" | "retrying" } | { outcome: "stale_or_cancelled" };
+
+interface FailedQueueJob {
+  status: "AVAILABLE" | "FAILED";
+  submissionId: string | null;
 }
 
 export interface JobQueue {
   claim(): Promise<ClaimedJob | null>;
-  complete(jobId: string): Promise<void>;
+  complete(jobId: string, expectedAttempt: number): Promise<LeaseMutationResult>;
   enqueue(
     name: string,
     jobKey: string,
-    payload: Prisma.InputJsonValue
+    payload: Prisma.InputJsonValue,
+    options?: EnqueueOptions
   ): Promise<string>;
-  fail(jobId: string, retryable: boolean, errorCode: string): Promise<void>;
+  fail(
+    jobId: string,
+    expectedAttempt: number,
+    retryable: boolean,
+    errorCode: string
+  ): Promise<FailureResult>;
 }
 
 export class PostgresJobQueue implements JobQueue {
@@ -24,10 +46,12 @@ export class PostgresJobQueue implements JobQueue {
   async enqueue(
     name: string,
     jobKey: string,
-    payload: Prisma.InputJsonValue
+    payload: Prisma.InputJsonValue,
+    options: EnqueueOptions = {}
   ): Promise<string> {
-    const job = await database.queueJob.upsert({
-      create: { jobKey, name, payload },
+    const client = options.transaction ?? database;
+    const job = await client.queueJob.upsert({
+      create: { jobKey, name, payload, submissionId: options.submissionId },
       update: {},
       where: { jobKey }
     });
@@ -37,7 +61,9 @@ export class PostgresJobQueue implements JobQueue {
   async claim(): Promise<ClaimedJob | null> {
     const staleBefore = new Date(Date.now() - this.lockTimeoutMs);
     const claimed = await database.$transaction(async (transaction) => {
-      await transaction.$executeRaw(Prisma.sql`
+      const expired = await transaction.$queryRaw<
+        Array<{ submissionId: string | null }>
+      >(Prisma.sql`
         UPDATE "QueueJob"
         SET
           "status" = 'FAILED',
@@ -48,7 +74,23 @@ export class PostgresJobQueue implements JobQueue {
           "status" = 'RUNNING'
           AND "lockedAt" <= ${staleBefore}
           AND "attempts" >= "maxAttempts"
+        RETURNING "submissionId"
       `);
+      const failedSubmissionIds = expired.flatMap(({ submissionId }) =>
+        submissionId ? [submissionId] : []
+      );
+      if (failedSubmissionIds.length > 0) {
+        await transaction.submission.updateMany({
+          data: {
+            failureCode: "stale_lock_max_attempts",
+            status: "FAILED"
+          },
+          where: {
+            id: { in: failedSubmissionIds },
+            status: "QUEUED"
+          }
+        });
+      }
 
       return transaction.$queryRaw<QueueJob[]>(Prisma.sql`
         UPDATE "QueueJob"
@@ -88,37 +130,76 @@ export class PostgresJobQueue implements JobQueue {
           attempts: job.attempts,
           id: job.id,
           name: job.name,
-          payload: job.payload
+          payload: job.payload,
+          submissionId: job.submissionId
         }
       : null;
   }
 
-  async complete(jobId: string): Promise<void> {
-    await database.queueJob.update({
+  async complete(jobId: string, expectedAttempt: number): Promise<LeaseMutationResult> {
+    const result = await database.queueJob.updateMany({
       data: {
         lastError: null,
         lockedAt: null,
         status: "COMPLETED"
       },
-      where: { id: jobId }
+      where: {
+        attempts: expectedAttempt,
+        id: jobId,
+        status: "RUNNING"
+      }
     });
+    return result.count === 1 ? "applied" : "stale_or_cancelled";
   }
 
-  async fail(jobId: string, retryable: boolean, errorCode: string): Promise<void> {
-    const job = await database.queueJob.findUniqueOrThrow({
-      select: { attempts: true, maxAttempts: true },
-      where: { id: jobId }
-    });
-    const shouldRetry = retryable && job.attempts < job.maxAttempts;
+  async fail(
+    jobId: string,
+    expectedAttempt: number,
+    retryable: boolean,
+    errorCode: string
+  ): Promise<FailureResult> {
+    return database.$transaction(async (transaction) => {
+      const failed = await transaction.$queryRaw<FailedQueueJob[]>(Prisma.sql`
+        UPDATE "QueueJob"
+        SET
+          "lastError" = ${errorCode.slice(0, 80)},
+          "lockedAt" = NULL,
+          "runAt" = CASE
+            WHEN ${retryable} AND "attempts" < "maxAttempts"
+              THEN NOW() + (INTERVAL '5 seconds' * "attempts")
+            ELSE "runAt"
+          END,
+          "status" = CASE
+            WHEN ${retryable} AND "attempts" < "maxAttempts"
+              THEN 'AVAILABLE'::"QueueJobStatus"
+            ELSE 'FAILED'::"QueueJobStatus"
+          END,
+          "updatedAt" = NOW()
+        WHERE
+          "id" = ${jobId}::uuid
+          AND "status" = 'RUNNING'
+          AND "attempts" = ${expectedAttempt}
+        RETURNING "status"::text AS "status", "submissionId"
+      `);
+      const job = failed[0];
+      if (!job) {
+        return { outcome: "stale_or_cancelled" };
+      }
 
-    await database.queueJob.update({
-      data: {
-        lastError: errorCode.slice(0, 80),
-        lockedAt: null,
-        runAt: shouldRetry ? new Date(Date.now() + 5_000 * job.attempts) : undefined,
-        status: shouldRetry ? "AVAILABLE" : "FAILED"
-      },
-      where: { id: jobId }
+      if (job.status === "FAILED" && job.submissionId) {
+        await transaction.submission.updateMany({
+          data: {
+            failureCode: errorCode.slice(0, 80),
+            status: "FAILED"
+          },
+          where: {
+            id: job.submissionId,
+            status: "QUEUED"
+          }
+        });
+      }
+
+      return { outcome: job.status === "FAILED" ? "failed" : "retrying" };
     });
   }
 }

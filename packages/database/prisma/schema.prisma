@@ -88,6 +88,7 @@ model Submission {
   analytics          AnalyticsEvent[]
   participant        Participant       @relation(fields: [participantId], references: [id], onDelete: Cascade)
   paymentSignals     PaymentSignal[]
+  queueJobs          QueueJob[]
   result             ReceiptResult?
   reviewJob          ReviewJob?
 
@@ -153,6 +154,7 @@ model QueueJob {
   id          String         @id @default(uuid()) @db.Uuid
   name        String
   jobKey      String         @unique
+  submissionId String?        @db.Uuid
   payload     Json
   status      QueueJobStatus @default(AVAILABLE)
   runAt       DateTime       @default(now())
@@ -162,6 +164,8 @@ model QueueJob {
   lastError   String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+  submission  Submission?    @relation(fields: [submissionId], references: [id], onDelete: Cascade)
 
   @@index([status, runAt, createdAt])
+  @@index([submissionId])
 }

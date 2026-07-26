@@ -4,7 +4,6 @@ import { getAuthProvider } from "@lights-on/auth";
 import { database } from "@lights-on/database";
 import { emailProvider } from "@lights-on/email";
 import { analytics, analyticsEvents } from "@lights-on/product-analytics";
-import { jobQueue } from "@lights-on/queue";
 import {
   earlyAccessSchema,
   paymentInterestSchema,
@@ -24,6 +23,10 @@ import {
 } from "@/lib/cookies";
 import { publicMutationAllowed } from "@/lib/request";
 import { currentParticipantId, reviewerIsAuthenticated } from "@/lib/session";
+import {
+  createQueuedReceiptSubmission,
+  deleteParticipantData
+} from "@/lib/submissions";
 
 function fields(error: z.ZodError): ActionState["fieldErrors"] {
   return z.flattenError(error).fieldErrors;
@@ -104,16 +107,10 @@ export async function submitSyntheticReceiptAction(
     return { fieldErrors: fields(parsed.error) };
   }
 
-  const submission = await database.submission.create({
-    data: {
-      participantId,
-      rawText: parsed.data.rawText
-    }
-  });
-
-  await jobQueue.enqueue("receipt.extract", submission.id, {
-    submissionId: submission.id
-  });
+  const submission = await createQueuedReceiptSubmission(
+    participantId,
+    parsed.data.rawText
+  );
   await analytics.capture({
     name: analyticsEvents.submissionCompleted,
     participantId,
@@ -276,16 +273,7 @@ export async function recordPaymentInterestAction(
 export async function deleteParticipantDataAction(): Promise<void> {
   const participantId = await currentParticipantId();
   if (participantId) {
-    await database.$transaction(async (transaction) => {
-      const submissions = await transaction.submission.findMany({
-        select: { id: true },
-        where: { participantId }
-      });
-      await transaction.queueJob.deleteMany({
-        where: { jobKey: { in: submissions.map((submission) => submission.id) } }
-      });
-      await transaction.participant.deleteMany({ where: { id: participantId } });
-    });
+    await deleteParticipantData(participantId);
   }
   const cookieStore = await cookies();
   cookieStore.delete(participantCookieName);
