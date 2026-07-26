@@ -1,0 +1,41 @@
+{
+  "name": "@lights-on/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "clean": "rm -rf .next",
+    "dev": "next dev --hostname 127.0.0.1",
+    "lint": "eslint 'src/**/*.{ts,tsx}' 'tests/**/*.ts'",
+    "start": "next start --hostname 0.0.0.0",
+    "test": "vitest run --exclude 'tests/integration/**'",
+    "test:integration": "vitest run tests/integration",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lights-on/auth": "workspace:*",
+    "@lights-on/config": "workspace:*",
+    "@lights-on/database": "workspace:*",
+    "@lights-on/email": "workspace:*",
+    "@lights-on/payments": "workspace:*",
+    "@lights-on/product-analytics": "workspace:*",
+    "@lights-on/queue": "workspace:*",
+    "@lights-on/ui": "workspace:*",
+    "@lights-on/validation": "workspace:*",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "postcss": "8.5.23",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

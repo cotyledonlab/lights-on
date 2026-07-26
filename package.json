@@ -1,0 +1,38 @@
+{
+  "name": "lights-on",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=24.18.0 <25",
+    "pnpm": ">=11.17.0 <12"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "turbo run clean && rm -rf .turbo coverage playwright-report test-results",
+    "db:deploy": "pnpm --filter @lights-on/database db:deploy",
+    "db:generate": "pnpm --filter @lights-on/database db:generate",
+    "db:migrate": "pnpm --filter @lights-on/database db:migrate",
+    "dev": "turbo run dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint 'e2e/**/*.ts' playwright.config.ts && turbo run lint",
+    "test": "turbo run test",
+    "test:e2e": "playwright test",
+    "test:integration": "./scripts/run-integration-tests.sh",
+    "typecheck": "tsc --noEmit && turbo run typecheck"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.0",
+    "@types/node": "24.13.3",
+    "eslint": "10.0.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.7.0",
+    "prettier": "3.9.6",
+    "turbo": "2.10.7",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0",
+    "vitest": "4.1.10"
+  }
+}

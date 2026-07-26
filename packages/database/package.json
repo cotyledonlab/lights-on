@@ -1,0 +1,26 @@
+{
+  "name": "@lights-on/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "prisma generate && tsc --noEmit",
+    "clean": "rm -rf src/generated",
+    "db:deploy": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "lint": "eslint src --ignore-pattern generated",
+    "typecheck": "prisma generate && tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "prisma": "6.19.3",
+    "typescript": "5.9.3"
+  }
+}

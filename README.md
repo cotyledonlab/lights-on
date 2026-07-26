@@ -1,8 +1,8 @@
 # Lights On
 
-Lights On is a reusable, low-cost TypeScript software-factory scaffold. Phase 1
-contains a deliberately thin receipt-review experiment that runs locally with
-fake providers and PostgreSQL.
+Lights On is a reusable, low-cost TypeScript software-factory scaffold. Phase 1 contains
+a deliberately thin receipt-review experiment that runs locally with fake providers and
+PostgreSQL.
 
 The local journey is:
 
@@ -30,9 +30,8 @@ make local-up
 make dev
 ```
 
-Open <http://localhost:3000>. The local reviewer access code comes from
-`.env`; `make bootstrap` creates that file from `.env.example` when it is
-missing.
+Open <http://localhost:3000>. The local reviewer access code comes from `.env`;
+`make bootstrap` creates that file from `.env.example` when it is missing.
 
 Run validation with:
 
@@ -49,13 +48,11 @@ See `docs/delivery/implementation-plan.md` for scope and
 
 ## Human gates
 
-Infrastructure provisioning, external deployment, live provider credentials,
-and GitHub roadmap mutation require explicit approval. The roadmap script is
-safe by default:
+Infrastructure provisioning, external deployment, live provider credentials, and GitHub
+roadmap mutation require explicit approval. The roadmap script is safe by default:
 
 ```bash
 ./scripts/bootstrap-github.sh --dry-run
 ```
 
 Only a human-approved invocation with `--apply` may mutate GitHub.
-

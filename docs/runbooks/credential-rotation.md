@@ -9,6 +9,5 @@ Phase 1 credentials are local environment values.
 5. Restart, verify health, and test the affected capability.
 6. Record the rotation timestamp and owner without recording the value.
 
-Environment-specific provider rotation procedures must be added before those
-providers are enabled.
-
+Environment-specific provider rotation procedures must be added before those providers
+are enabled.
