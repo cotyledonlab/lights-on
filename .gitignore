@@ -1,0 +1,32 @@
+# Dependencies and build output
+node_modules/
+.next/
+.turbo/
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Local environment and runtime state
+.env
+.env.local
+.env.*.local
+!.env.example
+*.log
+.DS_Store
+.artifacts/
+
+# Infrastructure state and credentials
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+*.pem
+*.key
+vault-password*
+
+# Editors
+.idea/
+.vscode/
+
